@@ -2,23 +2,36 @@
 
 import {Request, Response} from 'express';
 
+import knex from '../database/connection'
+
 export default {
     async create(req: Request, res: Response){
         const {nome, cpf} = req.body;
-        const id = 3;
-        const data = {id, nome, cpf}
+        const data = {cpf, nome};
+        await knex('tab_cadastro').insert(data)
         return res.status(201).json({data: data})
     },
     async list(req: Request, res: Response){
-        const result = [{id: 1, cpf: 222555, nome: "Renata"},{id: 1, cpf: 333555, nome: "Marciel"}  ]
+        var result = await knex('tab_cadastro').orderBy('nome')
         return res.status(201).json({data: result})
     },
+    async find(req: Request, res: Response){
+        const {id} = req.params;
+        const user = await knex('tab_cadastro').where({ id })
+        return res.status(201).json({data: user})
+    },
     async update(req: Request, res: Response){
+        const { id } = req.params;
         const {nome, cpf} = req.body;
-        const dataAlteracao = '30/03/2021';
-        const cadastro = {dataAlteracao, nome, cpf}
-        cadastro.nome = "José da Silva"
+        const data = {cpf, nome};
+        await knex('tab_cadastro').update(data).where({id});
+        const cadastro = await knex('tab_cadastro').where({id});
         return res.status(201).json({data: cadastro})
 
+    },
+    async delete(req: Request, res: Response) {
+        const {id} = req.params;
+        await knex('tab_cadastro').del().where({id});
+        return res.status(201).json({message: "Usuário deletado com sucesso"})
     }
 }

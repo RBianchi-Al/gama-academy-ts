@@ -6,6 +6,8 @@ const routes = Router();
 
 routes.post('/cadastro', CadastroController.create)
 routes.get('/cadastro', CadastroController.list)
-routes.put('/cadastro', CadastroController.update)
+routes.get('/cadastro/:id', CadastroController.find)
+routes.put('/cadastro/:id', CadastroController.update)
+routes.delete('/cadastro/:id', CadastroController.delete)
 
 export default routes;
